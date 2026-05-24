@@ -31,19 +31,19 @@ const heroSubStyle = {
   margin: '0 auto',
 };
 
-/* ─── Artist Highlights ─── */
-const artistSectionStyle = {
-  maxWidth: '1100px',
+/* ─── About the Artist ─── */
+const aboutSectionStyle = {
+  maxWidth: '900px',
   margin: '0 auto',
   padding: '0 var(--space-md) var(--space-2xl)',
 };
 
-const artistHeaderStyle = {
+const aboutHeaderStyle = {
   textAlign: 'center',
-  marginBottom: 'var(--space-xl)',
+  marginBottom: 'var(--space-lg)',
 };
 
-const artistTitleStyle = {
+const aboutTitleStyle = {
   fontFamily: 'var(--font-display)',
   fontSize: 'clamp(1.5rem, 3vw, 2rem)',
   fontWeight: 700,
@@ -51,68 +51,76 @@ const artistTitleStyle = {
   marginBottom: 'var(--space-xs)',
 };
 
-const artistSubtitleStyle = {
-  fontSize: '1rem',
-  color: 'var(--color-text-light)',
-  maxWidth: '500px',
-  margin: '0 auto',
-};
-
-const highlightsGridStyle = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-  gap: 'var(--space-lg)',
-};
-
-const highlightCardStyle = {
+const aboutContentStyle = {
   backgroundColor: 'var(--color-surface)',
   borderRadius: 'var(--radius-lg)',
-  padding: 'var(--space-lg)',
+  padding: 'var(--space-xl)',
   border: '1px solid var(--color-border)',
-  textAlign: 'center',
-  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
 };
 
-const highlightIconStyle = {
-  fontSize: '2.25rem',
-  marginBottom: 'var(--space-sm)',
-  display: 'block',
+const aboutTextStyle = {
+  fontSize: '1rem',
+  color: 'var(--color-text-light)',
+  lineHeight: 1.8,
+  marginBottom: 'var(--space-md)',
 };
 
-const highlightTitleStyle = {
+const aboutSubheadingStyle = {
   fontFamily: 'var(--font-display)',
-  fontSize: '1.0625rem',
+  fontSize: '1.125rem',
   fontWeight: 700,
   color: 'var(--color-text)',
-  marginBottom: '6px',
+  marginBottom: 'var(--space-sm)',
+  marginTop: 'var(--space-lg)',
 };
 
-const highlightDescStyle = {
-  fontSize: '0.875rem',
+const aboutLinkStyle = {
+  color: 'var(--color-accent)',
+  textDecoration: 'none',
+  fontWeight: 600,
+};
+
+const notableWorksGridStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+  gap: 'var(--space-md)',
+  marginTop: 'var(--space-md)',
+};
+
+const notableWorkCardStyle = {
+  backgroundColor: 'var(--color-bg)',
+  borderRadius: 'var(--radius-md)',
+  padding: 'var(--space-md)',
+  border: '1px solid var(--color-border)',
+  textAlign: 'center',
+};
+
+const notableWorkTitleStyle = {
+  fontFamily: 'var(--font-display)',
+  fontSize: '0.9375rem',
+  fontWeight: 700,
+  color: 'var(--color-text)',
+  marginBottom: '4px',
+};
+
+const notableWorkDescStyle = {
+  fontSize: '0.8125rem',
   color: 'var(--color-text-light)',
-  lineHeight: 1.6,
+  lineHeight: 1.5,
 };
 
-const HIGHLIGHTS = [
+const NOTABLE_WORKS = [
   {
-    icon: '🎨',
-    title: 'Original Creations',
-    desc: 'Every artwork is a unique, hand-crafted original — no reproductions, no mass prints.',
+    title: 'Meenakshi Pattabhishekam',
+    desc: 'A commissioned digital artwork rendered in a highly detailed Tanjore style.',
   },
   {
-    icon: '🏆',
-    title: 'Award-Winning Talent',
-    desc: 'Recognized by galleries and art institutions for exceptional artistic vision and craft.',
+    title: 'Melmalayanur Angaala Parameshwari',
+    desc: 'A vibrant portrayal of the deity along with the historical legends associated with the temple.',
   },
   {
-    icon: '✨',
-    title: 'Premium Quality',
-    desc: 'Museum-grade prints on archival paper and canvas, built to last for generations.',
-  },
-  {
-    icon: '🌍',
-    title: 'Global Collector Base',
-    desc: 'Artwork cherished by collectors across the world, from private homes to public spaces.',
+    title: 'Thiruvarur Kamalambika',
+    desc: 'An intricate illustration capturing the traditional aesthetic of the famous deity from Thiruvarur.',
   },
 ];
 
@@ -142,7 +150,7 @@ const loadMoreStyle = {
 const announcementSectionStyle = {
   position: 'relative',
   overflow: 'hidden',
-  background: 'linear-gradient(135deg, var(--color-surface) 0%, #1f1f1f 50%, var(--color-surface) 100%)',
+  background: 'linear-gradient(135deg, var(--color-surface) 0%, var(--color-secondary) 50%, var(--color-surface) 100%)',
   borderTop: '1px solid var(--color-border)',
   borderBottom: '1px solid var(--color-border)',
 };
@@ -164,7 +172,7 @@ const announcementLabelStyle = {
   fontWeight: 700,
   letterSpacing: '0.1em',
   textTransform: 'uppercase',
-  backgroundColor: 'rgba(230, 57, 70, 0.15)',
+  backgroundColor: 'rgba(177, 88, 70, 0.15)',
   color: 'var(--color-accent)',
   marginBottom: 'var(--space-md)',
 };
@@ -196,7 +204,7 @@ const announcementCTAStyle = {
   fontWeight: 700,
   fontSize: '1rem',
   transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-  boxShadow: '0 4px 20px rgba(230, 57, 70, 0.3)',
+  boxShadow: '0 4px 20px rgba(177, 88, 70, 0.3)',
 };
 
 /* ─── Decorative glow ─── */
@@ -205,7 +213,7 @@ const glowStyle = {
   width: '300px',
   height: '300px',
   borderRadius: '50%',
-  background: 'radial-gradient(circle, rgba(230,57,70,0.08) 0%, transparent 70%)',
+  background: 'radial-gradient(circle, rgba(177,88,70,0.08) 0%, transparent 70%)',
   pointerEvents: 'none',
 };
 
@@ -266,32 +274,49 @@ function GalleryPage() {
         </p>
       </section>
 
-      {/* ── Artist Highlights ── */}
-      <section style={artistSectionStyle}>
-        <div style={artistHeaderStyle}>
-          <h2 style={artistTitleStyle}>Why Collectors Love Our Artist</h2>
-          <p style={artistSubtitleStyle}>
-            A passion for detail, a commitment to excellence.
-          </p>
+      {/* ── About the Artist ── */}
+      <section style={aboutSectionStyle}>
+        <div style={aboutHeaderStyle}>
+          <h2 style={aboutTitleStyle}>About the Artist</h2>
         </div>
 
-        <div style={highlightsGridStyle}>
-          {HIGHLIGHTS.map((h, i) => (
-            <motion.div
-              key={i}
-              style={highlightCardStyle}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              whileHover={{ transform: 'translateY(-4px)', boxShadow: '0 8px 30px rgba(0,0,0,0.3)' }}
-            >
-              <span style={highlightIconStyle}>{h.icon}</span>
-              <h3 style={highlightTitleStyle}>{h.title}</h3>
-              <p style={highlightDescStyle}>{h.desc}</p>
-            </motion.div>
-          ))}
-        </div>
+        <motion.div
+          style={aboutContentStyle}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.6 }}
+        >
+          <p style={aboutTextStyle}>
+            <strong style={{ color: 'var(--color-text)' }}>Thillai Nathan</strong> (
+            <a href="https://www.instagram.com/dheena_tn07/" target="_blank" rel="noopener noreferrer" style={aboutLinkStyle}>@dheena_tn07</a>
+            ) is a prominent digital artist and illustrator specializing in traditional South Indian Hindu deity artwork. He creates stunning Tanjore-painting-styled artwork and traditional digital illustrations, with art primarily focused on deities, temples, and legends from Shaivism and Shaktism.
+          </p>
+
+          <h3 style={aboutSubheadingStyle}>Online Presence</h3>
+          <p style={aboutTextStyle}>
+            <a href="https://www.instagram.com/dheena_tn07/" target="_blank" rel="noopener noreferrer" style={aboutLinkStyle}>Instagram</a> — Explore his main gallery featuring commissioned works, divine digital art reels, and detailed descriptions of temple legends.
+            <br />
+            <a href="https://www.pinterest.com/gurusamyrajkumarmct/" target="_blank" rel="noopener noreferrer" style={aboutLinkStyle}>Pinterest</a> — A collection of god drawings and concept sketches.
+          </p>
+
+          <h3 style={aboutSubheadingStyle}>Notable Artworks</h3>
+          <div style={notableWorksGridStyle}>
+            {NOTABLE_WORKS.map((w, i) => (
+              <motion.div
+                key={i}
+                style={notableWorkCardStyle}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.1 }}
+              >
+                <h4 style={notableWorkTitleStyle}>{w.title}</h4>
+                <p style={notableWorkDescStyle}>{w.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
       </section>
 
       {/* ── Divider ── */}
@@ -366,11 +391,11 @@ function GalleryPage() {
                 style={announcementCTAStyle}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 6px 28px rgba(230, 57, 70, 0.45)';
+                  e.currentTarget.style.boxShadow = '0 6px 28px rgba(177, 88, 70, 0.45)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(230, 57, 70, 0.3)';
+                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(177, 88, 70, 0.3)';
                 }}
               >
                 {ann.ctaText || 'Learn More'}

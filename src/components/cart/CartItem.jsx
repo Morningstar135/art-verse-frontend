@@ -212,7 +212,7 @@ function CartItem({ item, onUpdateQuantity, onRemove }) {
         title="Remove item"
         type="button"
         onMouseEnter={(e) => {
-          e.currentTarget.style.backgroundColor = 'rgba(230, 57, 70, 0.1)';
+          e.currentTarget.style.backgroundColor = 'rgba(177, 88, 70, 0.1)';
           e.currentTarget.style.borderColor = 'var(--color-accent)';
           e.currentTarget.style.color = 'var(--color-accent)';
         }}

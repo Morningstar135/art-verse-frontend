@@ -42,7 +42,7 @@ const statusBadgeColors = {
   processing: { bg: 'rgba(40, 167, 69, 0.15)', color: '#28a745' },
   shipped: { bg: 'rgba(0, 123, 255, 0.15)', color: '#5b9aff' },
   delivered: { bg: 'rgba(40, 167, 69, 0.15)', color: '#28a745' },
-  cancelled: { bg: 'rgba(230, 57, 70, 0.15)', color: '#ff6b6b' },
+  cancelled: { bg: 'rgba(177, 88, 70, 0.15)', color: '#ff6b6b' },
 };
 
 const cardFooterStyle = {

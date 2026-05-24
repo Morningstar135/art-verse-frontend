@@ -7,7 +7,7 @@ const headerStyle = {
   position: 'sticky',
   top: 0,
   zIndex: 100,
-  backgroundColor: 'rgba(15, 15, 15, 0.92)',
+  backgroundColor: 'rgba(253, 246, 238, 0.92)',
   backdropFilter: 'blur(12px)',
   WebkitBackdropFilter: 'blur(12px)',
   borderBottom: '1px solid var(--color-border)',
@@ -122,7 +122,7 @@ const mobileMenuBtnStyle = {
 const mobileOverlayStyle = {
   position: 'fixed',
   inset: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  backgroundColor: 'rgba(58, 42, 30, 0.3)',
   zIndex: 150,
 };
 

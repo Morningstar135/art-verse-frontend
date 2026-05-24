@@ -13,16 +13,16 @@
 /* ========== CSS Custom Properties ========== */
 :root {
   /* Colors */
-  --color-primary: #FFFFFF;
-  --color-secondary: #2A2A2A;
-  --color-accent: #E63946;
-  --color-highlight: #FF6B6B;
-  --color-bg: #0F0F0F;
-  --color-surface: #1A1A1A;
-  --color-text: #FFFFFF;
-  --color-text-light: #A0A0A0;
+  --color-primary: #b15846;
+  --color-secondary: #edcb9d;
+  --color-accent: #b15846;
+  --color-highlight: #edcb9d;
+  --color-bg: #fdf6ee;
+  --color-surface: #FFFFFF;
+  --color-text: #3a2a1e;
+  --color-text-light: #7a6555;
   --color-white: #FFFFFF;
-  --color-border: #2A2A2A;
+  --color-border: #e6d5c3;
   --color-success: #10b981;
   --color-error: #ef4444;
 

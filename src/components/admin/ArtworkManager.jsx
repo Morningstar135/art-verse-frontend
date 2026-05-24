@@ -69,7 +69,7 @@ const badgeStyle = (active) => ({
   borderRadius: '999px',
   fontSize: '0.75rem',
   fontWeight: 600,
-  backgroundColor: active ? 'rgba(40, 167, 69, 0.15)' : 'rgba(230, 57, 70, 0.15)',
+  backgroundColor: active ? 'rgba(40, 167, 69, 0.15)' : 'rgba(177, 88, 70, 0.15)',
   color: active ? '#28a745' : '#ff6b6b',
 });
 

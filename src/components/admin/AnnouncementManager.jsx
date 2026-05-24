@@ -17,7 +17,7 @@ const TYPES = [
 
 const typeBadgeColors = {
   course: { bg: 'rgba(0, 123, 255, 0.15)', color: '#5b9aff' },
-  campaign: { bg: 'rgba(230, 57, 70, 0.15)', color: '#ff6b6b' },
+  campaign: { bg: 'rgba(177, 88, 70, 0.15)', color: '#ff6b6b' },
   event: { bg: 'rgba(255, 193, 7, 0.15)', color: '#ffc107' },
   general: { bg: 'rgba(40, 167, 69, 0.15)', color: '#28a745' },
 };
@@ -99,7 +99,7 @@ const activeBadgeStyle = (active) => ({
   borderRadius: '999px',
   fontSize: '0.75rem',
   fontWeight: 600,
-  backgroundColor: active ? 'rgba(40, 167, 69, 0.15)' : 'rgba(230, 57, 70, 0.15)',
+  backgroundColor: active ? 'rgba(40, 167, 69, 0.15)' : 'rgba(177, 88, 70, 0.15)',
   color: active ? '#28a745' : '#ff6b6b',
 });
 

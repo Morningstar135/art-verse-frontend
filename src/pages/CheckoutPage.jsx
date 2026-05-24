@@ -37,8 +37,8 @@ const stepStyle = (active) => ({
 
 const errorStyle = {
   padding: '12px 16px',
-  backgroundColor: 'rgba(230, 57, 70, 0.1)',
-  border: '1px solid rgba(230, 57, 70, 0.3)',
+  backgroundColor: 'rgba(177, 88, 70, 0.1)',
+  border: '1px solid rgba(177, 88, 70, 0.3)',
   borderRadius: '8px',
   color: '#ff6b6b',
   fontSize: '0.875rem',

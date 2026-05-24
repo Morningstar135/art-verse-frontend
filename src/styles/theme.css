@@ -184,8 +184,8 @@
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #c02b35;
-  border-color: #c02b35;
+  background-color: #8f4638;
+  border-color: #8f4638;
 }
 
 .btn-secondary {
@@ -265,7 +265,7 @@
 
 .form-input:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2);
+  box-shadow: 0 0 0 3px rgba(177, 88, 70, 0.2);
 }
 
 .form-input:disabled {
