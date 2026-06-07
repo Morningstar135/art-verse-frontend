@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const navLinks = [
   { to: '/admin', label: 'Dashboard', icon: '📊', end: true },
+  { to: '/admin/categories', label: 'Categories', icon: '🏷' },
   { to: '/admin/artworks', label: 'Artworks', icon: '🎨' },
   { to: '/admin/courses', label: 'Courses', icon: '🎓' },
   { to: '/admin/orders', label: 'Orders', icon: '📦' },

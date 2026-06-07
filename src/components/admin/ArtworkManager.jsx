@@ -154,34 +154,25 @@ function ArtworkForm({ form, setForm, categories, onSubmit, loading, isEdit }) {
       </div>
 
       <div className="form-group" style={{ marginBottom: 0 }}>
-        <label className="form-label">Categories</label>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-xs)' }}>
+        <label className="form-label">Category</label>
+        <select
+          className="form-input"
+          value={form.categories[0] || ''}
+          onChange={(e) => {
+            const val = e.target.value;
+            setForm((f) => ({ ...f, categories: val ? [val] : [] }));
+          }}
+        >
+          <option value="">Select a category</option>
           {categories.map((cat) => {
-            const selected = form.categories.includes(cat.id || cat._id);
             const catId = cat.id || cat._id;
             return (
-              <button
-                key={catId}
-                type="button"
-                onClick={() => toggleCategory(catId)}
-                style={{
-                  padding: '4px 12px',
-                  borderRadius: '999px',
-                  border: '1.5px solid',
-                  borderColor: selected ? 'var(--color-accent)' : 'var(--color-border)',
-                  backgroundColor: selected ? 'var(--color-accent)' : 'transparent',
-                  color: selected ? 'var(--color-white)' : 'var(--color-text)',
-                  cursor: 'pointer',
-                  fontSize: '0.8125rem',
-                  fontFamily: 'var(--font-primary)',
-                  transition: 'all var(--transition-fast)',
-                }}
-              >
+              <option key={catId} value={catId}>
                 {cat.name}
-              </button>
+              </option>
             );
           })}
-        </div>
+        </select>
       </div>
 
       <div className="form-group" style={{ marginBottom: 0 }}>

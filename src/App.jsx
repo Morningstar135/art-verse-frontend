@@ -25,6 +25,7 @@ const AdminArtworksPage = React.lazy(() => import('./pages/admin/AdminArtworksPa
 const AdminCoursesPage = React.lazy(() => import('./pages/admin/AdminCoursesPage'));
 const AdminOrdersPage = React.lazy(() => import('./pages/admin/AdminOrdersPage'));
 const AdminAnnouncementsPage = React.lazy(() => import('./pages/admin/AdminAnnouncementsPage'));
+const AdminCategoriesPage = React.lazy(() => import('./pages/admin/AdminCategoriesPage'));
 
 import './styles/theme.css';
 
@@ -95,6 +96,7 @@ function App() {
 
             {/* Admin routes */}
             <Route path="/admin" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
+            <Route path="/admin/categories" element={<AdminRoute><AdminCategoriesPage /></AdminRoute>} />
             <Route path="/admin/artworks" element={<AdminRoute><AdminArtworksPage /></AdminRoute>} />
             <Route path="/admin/courses" element={<AdminRoute><AdminCoursesPage /></AdminRoute>} />
             <Route path="/admin/orders" element={<AdminRoute><AdminOrdersPage /></AdminRoute>} />

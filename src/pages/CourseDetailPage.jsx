@@ -164,7 +164,17 @@ function CourseDetailPage() {
 
       // Create enrollment order
       const response = await enrollInCourse(id);
-      const { razorpayOrderId, amount, key } = response.data;
+      const data = response.data;
+
+      // Dev mode: enrollment already paid, skip Razorpay
+      if (data.devMode) {
+        toast.success('Enrolled successfully!');
+        fetchCourse();
+        setEnrolling(false);
+        return;
+      }
+
+      const { razorpayOrderId, amount, key } = data;
 
       // Open Razorpay payment modal
       const options = {
@@ -182,7 +192,7 @@ function CourseDetailPage() {
               razorpaySignature: paymentResponse.razorpay_signature,
             });
             toast.success('Enrolled successfully!');
-            fetchCourse(); // Reload to update enrollment status
+            fetchCourse();
           } catch (err) {
             toast.error('Payment verification failed. Please contact support.');
           }

@@ -86,7 +86,16 @@ function CheckoutPage() {
         shippingAddress,
       });
 
-      setOrderData(response.data);
+      const data = response.data;
+
+      // Dev mode: order already paid, skip Razorpay
+      if (data.devMode) {
+        clearCart();
+        navigate(`/orders/${data.orderId}/confirmation`);
+        return;
+      }
+
+      setOrderData(data);
     } catch (err) {
       const message =
         err.response?.data?.error ||
