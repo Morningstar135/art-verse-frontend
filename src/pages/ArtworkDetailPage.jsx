@@ -130,7 +130,7 @@ function ArtworkDetailPage() {
   const [config, setConfig] = useState({
     medium: 'paper',
     size: 'A4',
-    quality: '200gsm',
+    quality: '300gsm',
     quantity: 1,
   });
   const [addingToCart, setAddingToCart] = useState(false);

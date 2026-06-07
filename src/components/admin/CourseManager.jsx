@@ -57,7 +57,6 @@ const INITIAL_LESSON_FORM = {
   title: '',
   description: '',
   duration: '',
-  videoFile: null,
 };
 
 function CourseForm({ form, setForm, onSubmit, loading, isEdit }) {
@@ -222,18 +221,6 @@ function LessonForm({ onSubmit, loading }) {
         />
       </div>
 
-      <div className="form-group" style={{ marginBottom: 0 }}>
-        <label className="form-label">Video File</label>
-        <input
-          type="file"
-          accept="video/*"
-          style={{ fontSize: '0.875rem' }}
-          onChange={(e) =>
-            setForm((f) => ({ ...f, videoFile: e.target.files[0] || null }))
-          }
-        />
-      </div>
-
       <Button type="submit" variant="primary" fullWidth loading={loading}>
         Add Lesson
       </Button>
@@ -254,8 +241,6 @@ function LessonManager({ course, onClose, onUpdated }) {
       fd.append('title', form.title);
       fd.append('description', form.description);
       fd.append('duration', form.duration);
-      if (form.videoFile) fd.append('video', form.videoFile);
-
       const res = await adminAddLesson(course.id, fd);
       setLessons((prev) => [...prev, res.lesson]);
       setShowAddLesson(false);

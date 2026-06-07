@@ -76,23 +76,6 @@ function PrintConfigurator({ config, onChange }) {
 
   return (
     <div>
-      {/* Medium */}
-      <div style={sectionStyle}>
-        <span style={labelStyle}>Print Medium</span>
-        <div style={toggleGroupStyle}>
-          {['paper', 'canvas'].map((m) => (
-            <button
-              key={m}
-              style={config.medium === m ? toggleBtnActiveStyle : toggleBtnStyle}
-              onClick={() => update('medium', m)}
-              type="button"
-            >
-              {m.charAt(0).toUpperCase() + m.slice(1)}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* Size */}
       <div style={sectionStyle}>
         <span style={labelStyle}>Size</span>
@@ -105,23 +88,6 @@ function PrintConfigurator({ config, onChange }) {
               type="button"
             >
               {s}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Quality */}
-      <div style={sectionStyle}>
-        <span style={labelStyle}>Paper Quality</span>
-        <div style={toggleGroupStyle}>
-          {['200gsm', '300gsm'].map((q) => (
-            <button
-              key={q}
-              style={config.quality === q ? toggleBtnActiveStyle : toggleBtnStyle}
-              onClick={() => update('quality', q)}
-              type="button"
-            >
-              {q.toUpperCase()}
             </button>
           ))}
         </div>

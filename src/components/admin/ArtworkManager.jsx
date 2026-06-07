@@ -10,9 +10,9 @@ import {
   adminGetCategories,
 } from '../../services/adminService';
 
-const MEDIUMS = ['paper', 'canvas'];
+const MEDIUMS = ['paper'];
 const SIZES = ['A4', 'A3', 'A2'];
-const QUALITIES = ['200gsm', '300gsm'];
+const QUALITIES = ['300gsm'];
 
 const DEFAULT_PRICE = 100000; // ₹1,000 in paise
 

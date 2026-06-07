@@ -46,7 +46,7 @@ function Footer() {
     <footer style={footerStyle}>
       <div style={containerStyle}>
         <p style={copyrightStyle}>
-          &copy; 2026 ArtVerse. All rights reserved.
+          &copy; 2026 Dheena Arts. All rights reserved.
         </p>
         <div style={socialContainerStyle}>
           <a

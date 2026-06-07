@@ -24,11 +24,14 @@ const navContainerStyle = {
 };
 
 const logoStyle = {
-  fontFamily: 'var(--font-display)',
-  fontSize: '1.5rem',
-  fontWeight: 700,
-  color: 'var(--color-primary)',
   textDecoration: 'none',
+  display: 'flex',
+  alignItems: 'center',
+};
+
+const logoImgStyle = {
+  height: '40px',
+  width: 'auto',
 };
 
 const navLinksStyle = {
@@ -181,7 +184,7 @@ function Header() {
         <nav style={navContainerStyle}>
           {/* Logo */}
           <Link to="/" style={logoStyle}>
-            ArtVerse
+            <img src="/logo.jpeg" alt="Dheena Arts" style={logoImgStyle} />
           </Link>
 
           {/* Desktop Nav Links */}
@@ -259,7 +262,7 @@ function Header() {
           <div style={mobileOverlayStyle} onClick={() => setMobileOpen(false)} />
           <div style={mobileDrawerStyle}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ ...logoStyle, fontSize: '1.25rem' }}>ArtVerse</span>
+              <span style={logoStyle}><img src="/logo.jpeg" alt="Dheena Arts" style={{ ...logoImgStyle, height: '32px' }} /></span>
               <button
                 style={{ ...mobileMenuBtnStyle, display: 'flex' }}
                 onClick={() => setMobileOpen(false)}

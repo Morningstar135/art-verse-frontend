@@ -47,7 +47,7 @@ function AdminDashboardPage() {
           Dashboard
         </h1>
         <p style={{ color: 'var(--color-text-light)', fontSize: '0.9375rem', margin: 0 }}>
-          Overview of your ArtVerse platform
+          Overview of your Dheena Arts platform
         </p>
       </div>
 

@@ -47,7 +47,7 @@ const footerStyle = {
 function RegisterPage() {
   const { register } = useAuth();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+  const [formData, setFormData] = useState({ name: '', phone: '', password: '', confirmPassword: '' });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -61,7 +61,8 @@ function RegisterPage() {
     const errs = {};
     if (!formData.name.trim()) errs.name = 'Name is required';
     else if (formData.name.trim().length < 2) errs.name = 'Name must be at least 2 characters';
-    if (!formData.email.trim()) errs.email = 'Email is required';
+    if (!formData.phone.trim()) errs.phone = 'Phone number is required';
+    else if (!/^\d{10}$/.test(formData.phone.trim())) errs.phone = 'Enter a valid 10-digit phone number';
     if (!formData.password) errs.password = 'Password is required';
     else if (formData.password.length < 8) errs.password = 'Password must be at least 8 characters';
     if (formData.password !== formData.confirmPassword) errs.confirmPassword = 'Passwords do not match';
@@ -78,7 +79,7 @@ function RegisterPage() {
 
     setLoading(true);
     try {
-      await register(formData.name, formData.email, formData.password);
+      await register(formData.name, formData.phone, formData.password);
       toast.success('Account created successfully!');
       navigate('/');
     } catch (err) {
@@ -93,7 +94,7 @@ function RegisterPage() {
     <div style={pageStyle}>
       <div style={cardStyle}>
         <h1 style={titleStyle}>Create Account</h1>
-        <p style={subtitleStyle}>Join ArtVerse and explore amazing art</p>
+        <p style={subtitleStyle}>Join Dheena Arts and explore amazing art</p>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -112,18 +113,19 @@ function RegisterPage() {
           </div>
 
           <div className="form-group">
-            <label className="form-label" htmlFor="register-email">Email</label>
+            <label className="form-label" htmlFor="register-phone">Phone Number</label>
             <input
-              id="register-email"
-              name="email"
-              type="email"
-              className={`form-input${errors.email ? ' error' : ''}`}
-              placeholder="you@example.com"
-              value={formData.email}
+              id="register-phone"
+              name="phone"
+              type="tel"
+              className={`form-input${errors.phone ? ' error' : ''}`}
+              placeholder="10-digit mobile number"
+              value={formData.phone}
               onChange={handleChange}
-              autoComplete="email"
+              autoComplete="tel"
+              maxLength={10}
             />
-            {errors.email && <span className="form-error">{errors.email}</span>}
+            {errors.phone && <span className="form-error">{errors.phone}</span>}
           </div>
 
           <div className="form-group">

@@ -48,7 +48,7 @@ const footerStyle = {
 function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ phone: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -60,7 +60,8 @@ function LoginPage() {
 
   function validate() {
     const errs = {};
-    if (!formData.email.trim()) errs.email = 'Email is required';
+    if (!formData.phone.trim()) errs.phone = 'Phone number is required';
+    else if (!/^\d{10}$/.test(formData.phone.trim())) errs.phone = 'Enter a valid 10-digit phone number';
     if (!formData.password) errs.password = 'Password is required';
     return errs;
   }
@@ -75,7 +76,7 @@ function LoginPage() {
 
     setLoading(true);
     try {
-      await login(formData.email, formData.password);
+      await login(formData.phone, formData.password);
       toast.success('Welcome back!');
       navigate('/');
     } catch (err) {
@@ -90,22 +91,23 @@ function LoginPage() {
     <div style={pageStyle}>
       <div style={cardStyle}>
         <h1 style={titleStyle}>Welcome Back</h1>
-        <p style={subtitleStyle}>Sign in to your ArtVerse account</p>
+        <p style={subtitleStyle}>Sign in to your Dheena Arts account</p>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label" htmlFor="login-email">Email</label>
+            <label className="form-label" htmlFor="login-phone">Phone Number</label>
             <input
-              id="login-email"
-              name="email"
-              type="email"
-              className={`form-input${errors.email ? ' error' : ''}`}
-              placeholder="you@example.com"
-              value={formData.email}
+              id="login-phone"
+              name="phone"
+              type="tel"
+              className={`form-input${errors.phone ? ' error' : ''}`}
+              placeholder="10-digit mobile number"
+              value={formData.phone}
               onChange={handleChange}
-              autoComplete="email"
+              autoComplete="tel"
+              maxLength={10}
             />
-            {errors.email && <span className="form-error">{errors.email}</span>}
+            {errors.phone && <span className="form-error">{errors.phone}</span>}
           </div>
 
           <div className="form-group">

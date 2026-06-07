@@ -34,8 +34,8 @@ export function AuthProvider({ children }) {
     loadUser();
   }, []);
 
-  async function login(email, password) {
-    const response = await api.post('/auth/login', { email, password });
+  async function login(phone, password) {
+    const response = await api.post('/auth/login', { phone, password });
     const { token, refreshToken, user: userData } = response.data;
     localStorage.setItem('token', token);
     if (refreshToken) {
@@ -45,8 +45,8 @@ export function AuthProvider({ children }) {
     return userData;
   }
 
-  async function register(name, email, password) {
-    const response = await api.post('/auth/register', { name, email, password });
+  async function register(name, phone, password) {
+    const response = await api.post('/auth/register', { name, phone, password });
     const { token, refreshToken, user: userData } = response.data;
     localStorage.setItem('token', token);
     if (refreshToken) {

@@ -171,7 +171,7 @@ function CourseDetailPage() {
         key,
         amount,
         currency: 'INR',
-        name: 'ArtVerse',
+        name: 'Dheena Arts',
         description: `Enrollment: ${course.title}`,
         order_id: razorpayOrderId,
         handler: async (paymentResponse) => {

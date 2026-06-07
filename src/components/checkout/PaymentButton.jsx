@@ -42,7 +42,7 @@ function PaymentButton({ amount, orderId, razorpayOrderId, razorpayKey, onSucces
       key: razorpayKey,
       amount,
       currency: 'INR',
-      name: 'ArtVerse',
+      name: 'Dheena Arts',
       description: 'Print Purchase',
       order_id: razorpayOrderId,
       handler: (response) => {

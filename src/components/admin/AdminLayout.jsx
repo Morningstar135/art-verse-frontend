@@ -18,8 +18,8 @@ const layoutStyle = {
 const sidebarStyle = {
   width: '220px',
   flexShrink: 0,
-  backgroundColor: 'var(--color-surface)',
-  color: 'var(--color-text)',
+  backgroundColor: '#2c1e14',
+  color: '#ffffff',
   display: 'flex',
   flexDirection: 'column',
   padding: 'var(--space-lg) 0',
@@ -29,7 +29,7 @@ const brandStyle = {
   fontFamily: 'var(--font-display)',
   fontSize: '1.125rem',
   fontWeight: 700,
-  color: 'var(--color-white)',
+  color: '#edcb9d',
   padding: '0 var(--space-lg)',
   marginBottom: 'var(--space-xl)',
   letterSpacing: '0.02em',
@@ -37,7 +37,7 @@ const brandStyle = {
 
 const brandSubStyle = {
   fontSize: '0.75rem',
-  color: 'rgba(255,255,255,0.5)',
+  color: 'rgba(237,203,157,0.6)',
   fontFamily: 'var(--font-primary)',
   fontWeight: 400,
   display: 'block',
@@ -59,7 +59,7 @@ const navLinkBase = {
   padding: 'var(--space-sm) var(--space-lg)',
   fontSize: '0.9375rem',
   fontWeight: 500,
-  color: 'rgba(255,255,255,0.7)',
+  color: '#d4c4b0',
   textDecoration: 'none',
   transition: 'all var(--transition-fast)',
   borderLeft: '3px solid transparent',
@@ -78,14 +78,14 @@ const contentInnerStyle = {
 
 const footerStyle = {
   padding: 'var(--space-lg)',
-  borderTop: '1px solid rgba(255,255,255,0.1)',
+  borderTop: '1px solid rgba(237,203,157,0.15)',
   marginTop: 'auto',
 };
 
 const logoutBtnStyle = {
   background: 'none',
-  border: '1px solid rgba(255,255,255,0.3)',
-  color: 'rgba(255,255,255,0.7)',
+  border: '1px solid rgba(237,203,157,0.3)',
+  color: '#d4c4b0',
   padding: 'var(--space-xs) var(--space-md)',
   borderRadius: 'var(--radius-md)',
   cursor: 'pointer',
@@ -108,7 +108,7 @@ function AdminLayout({ children }) {
     <div style={layoutStyle}>
       <aside style={sidebarStyle}>
         <div style={brandStyle}>
-          ArtVerse
+          <img src="/logo.jpeg" alt="Dheena Arts" style={{ height: '36px', width: 'auto' }} />
           <span style={brandSubStyle}>Admin Panel</span>
         </div>
 
@@ -120,9 +120,9 @@ function AdminLayout({ children }) {
               end={end}
               style={({ isActive }) => ({
                 ...navLinkBase,
-                color: isActive ? 'var(--color-white)' : 'rgba(255,255,255,0.7)',
-                backgroundColor: isActive ? 'rgba(255,255,255,0.1)' : 'transparent',
-                borderLeftColor: isActive ? 'var(--color-accent)' : 'transparent',
+                color: isActive ? '#edcb9d' : '#d4c4b0',
+                backgroundColor: isActive ? 'rgba(237,203,157,0.1)' : 'transparent',
+                borderLeftColor: isActive ? '#b15846' : 'transparent',
               })}
             >
               <span>{icon}</span>
@@ -136,12 +136,12 @@ function AdminLayout({ children }) {
             style={logoutBtnStyle}
             onClick={handleLogout}
             onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'var(--color-white)';
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.7)';
+              e.currentTarget.style.color = '#edcb9d';
+              e.currentTarget.style.borderColor = 'rgba(237,203,157,0.6)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'rgba(255,255,255,0.7)';
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)';
+              e.currentTarget.style.color = '#d4c4b0';
+              e.currentTarget.style.borderColor = 'rgba(237,203,157,0.3)';
             }}
           >
             Logout
