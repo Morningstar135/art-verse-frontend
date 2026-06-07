@@ -86,11 +86,7 @@ function ForgotPasswordPage() {
     setErrors({});
     try {
       const res = await forgotPassword(phone);
-      if (res.data.devMode) {
-        toast.success('Dev mode: OTP is 123456');
-      } else {
-        toast.success('OTP sent to your phone');
-      }
+      toast.success('OTP sent to your phone');
       setStep(2);
     } catch (err) {
       toast.error(err.response?.data?.error || 'Failed to send OTP');
