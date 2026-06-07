@@ -34,18 +34,43 @@ const gridStyle = {
   gap: 'var(--space-xl)',
 };
 
+const paginationStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  gap: 'var(--space-sm)',
+  marginTop: 'var(--space-xl)',
+};
+
+const pageBtnStyle = (active) => ({
+  padding: '8px 16px',
+  borderRadius: 'var(--radius-md)',
+  border: '1.5px solid',
+  borderColor: active ? 'var(--color-accent)' : 'var(--color-border)',
+  backgroundColor: active ? 'var(--color-accent)' : 'transparent',
+  color: active ? 'var(--color-white)' : 'var(--color-text)',
+  cursor: 'pointer',
+  fontSize: '0.875rem',
+  fontWeight: 600,
+  fontFamily: 'var(--font-primary)',
+  transition: 'all var(--transition-fast)',
+});
+
 function CoursesListingPage() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     async function fetchCourses() {
       setLoading(true);
       setError(null);
       try {
-        const response = await getCourses();
+        const response = await getCourses({ page, limit: 12 });
         setCourses(response.data.courses || []);
+        setTotalPages(response.data.pagination?.totalPages || 1);
       } catch (err) {
         setError('Failed to load courses. Please try again later.');
       } finally {
@@ -53,7 +78,7 @@ function CoursesListingPage() {
       }
     }
     fetchCourses();
-  }, []);
+  }, [page]);
 
   if (loading) return <Loader fullPage />;
 
@@ -80,11 +105,41 @@ function CoursesListingPage() {
           message="We are working on new courses. Check back soon."
         />
       ) : (
-        <div style={gridStyle}>
-          {courses.map((course) => (
-            <CourseCard key={course.id} course={course} />
-          ))}
-        </div>
+        <>
+          <div style={gridStyle}>
+            {courses.map((course) => (
+              <CourseCard key={course.id} course={course} />
+            ))}
+          </div>
+
+          {totalPages > 1 && (
+            <div style={paginationStyle}>
+              <button
+                style={pageBtnStyle(false)}
+                onClick={() => setPage((p) => p - 1)}
+                disabled={page <= 1}
+              >
+                Previous
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                <button
+                  key={p}
+                  style={pageBtnStyle(p === page)}
+                  onClick={() => setPage(p)}
+                >
+                  {p}
+                </button>
+              ))}
+              <button
+                style={pageBtnStyle(false)}
+                onClick={() => setPage((p) => p + 1)}
+                disabled={page >= totalPages}
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

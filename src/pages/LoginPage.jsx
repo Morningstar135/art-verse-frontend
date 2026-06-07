@@ -135,6 +135,12 @@ function LoginPage() {
           </button>
         </form>
 
+        <div style={{ textAlign: 'right', marginTop: 'var(--space-sm)' }}>
+          <Link to="/forgot-password" style={{ fontSize: '0.875rem', color: 'var(--color-accent)', fontWeight: 500 }}>
+            Forgot Password?
+          </Link>
+        </div>
+
         <p style={footerStyle}>
           Don't have an account?{' '}
           <Link to="/register" style={{ fontWeight: 600 }}>Create one</Link>
