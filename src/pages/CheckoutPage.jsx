@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import AddressForm from '../components/checkout/AddressForm';
 import OrderSummary from '../components/checkout/OrderSummary';
-import PaymentButton from '../components/checkout/PaymentButton';
+import PaymentDetails from '../components/checkout/PaymentDetails';
 import { Loader, EmptyState } from '../components/common';
 import * as orderService from '../services/orderService';
 
@@ -87,15 +87,8 @@ function CheckoutPage() {
       });
 
       const data = response.data;
-
-      // Dev mode: order already paid, skip Razorpay
-      if (data.devMode) {
-        clearCart();
-        navigate(`/orders/${data.orderId}/confirmation`);
-        return;
-      }
-
       setOrderData(data);
+      clearCart();
     } catch (err) {
       const message =
         err.response?.data?.error ||
@@ -105,27 +98,6 @@ function CheckoutPage() {
     } finally {
       setProcessing(false);
     }
-  };
-
-  const handlePaymentSuccess = async (paymentData) => {
-    setProcessing(true);
-    setError('');
-
-    try {
-      await orderService.verifyPayment(orderData.orderId, paymentData);
-      clearCart();
-      navigate(`/orders/${orderData.orderId}/confirmation`);
-    } catch (err) {
-      const message =
-        err.response?.data?.error || 'Payment verification failed. Please contact support.';
-      setError(message);
-    } finally {
-      setProcessing(false);
-    }
-  };
-
-  const handlePaymentFailure = (reason) => {
-    setError(reason || 'Payment was not completed.');
   };
 
   if (cartLoading) {
@@ -184,17 +156,23 @@ function CheckoutPage() {
               onClick={handlePlaceOrder}
               disabled={processing}
             >
-              {processing ? 'Creating Order...' : 'Place Order & Pay'}
+              {processing ? 'Creating Order...' : 'Place Order'}
             </button>
           ) : (
-            <PaymentButton
-              amount={orderData.amount}
-              orderId={orderData.orderId}
-              razorpayOrderId={orderData.razorpayOrderId}
-              razorpayKey={orderData.key}
-              onSuccess={handlePaymentSuccess}
-              onFailure={handlePaymentFailure}
-            />
+            <>
+              <PaymentDetails
+                orderNumber={orderData.orderNumber}
+                amount={orderData.amount}
+              />
+              <div style={spacerStyle} />
+              <button
+                className="btn btn-primary btn-full"
+                style={{ width: '100%', padding: '14px', fontSize: '1rem' }}
+                onClick={() => navigate(`/orders/${orderData.orderId}/confirmation`)}
+              >
+                I've Completed Payment &rarr;
+              </button>
+            </>
           )}
         </>
       )}

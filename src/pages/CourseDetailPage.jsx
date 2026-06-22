@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { getCourse, enrollInCourse, verifyEnrollmentPayment } from '../services/courseService';
+import { getCourse, enrollInCourse } from '../services/courseService';
 import { useAuth } from '../context/AuthContext';
 import CurriculumList from '../components/courses/CurriculumList';
 import { Loader, Button } from '../components/common';
@@ -98,19 +98,81 @@ const curriculumBoxStyle = {
   overflow: 'hidden',
 };
 
-function loadRazorpayScript() {
-  return new Promise((resolve) => {
-    if (window.Razorpay) {
-      resolve(true);
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
-    document.body.appendChild(script);
-  });
-}
+const paymentModalOverlayStyle = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(0,0,0,0.7)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  zIndex: 1000,
+  padding: '16px',
+};
+
+const paymentModalStyle = {
+  backgroundColor: 'var(--color-bg, #0f0f23)',
+  borderRadius: '16px',
+  padding: '28px',
+  maxWidth: '480px',
+  width: '100%',
+  maxHeight: '90vh',
+  overflowY: 'auto',
+  border: '1px solid var(--color-border, rgba(255,255,255,0.1))',
+};
+
+const paymentTabsStyle = {
+  display: 'flex',
+  gap: '0',
+  marginBottom: '20px',
+  borderBottom: '1px solid var(--color-border, rgba(255,255,255,0.1))',
+};
+
+const paymentTabStyle = (active) => ({
+  padding: '10px 16px',
+  fontSize: '0.875rem',
+  fontWeight: active ? 600 : 400,
+  color: active ? 'var(--color-accent)' : 'var(--color-text-light)',
+  background: 'transparent',
+  border: 'none',
+  borderBottom: active ? '2px solid var(--color-accent)' : '2px solid transparent',
+  cursor: 'pointer',
+  fontFamily: 'var(--font-primary)',
+});
+
+const paymentLabelStyle = {
+  fontSize: '0.75rem',
+  fontWeight: 600,
+  color: 'var(--color-text-light)',
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
+  marginBottom: '6px',
+};
+
+const paymentValueStyle = {
+  fontSize: '0.95rem',
+  color: 'var(--color-text)',
+  fontWeight: 500,
+  padding: '8px 12px',
+  backgroundColor: 'rgba(255,255,255,0.05)',
+  borderRadius: '6px',
+  fontFamily: 'monospace',
+  wordBreak: 'break-all',
+  marginBottom: '12px',
+};
+
+const paymentNoteStyle = {
+  fontSize: '0.8rem',
+  color: 'var(--color-text-light)',
+  backgroundColor: 'rgba(233, 69, 96, 0.1)',
+  border: '1px solid rgba(233, 69, 96, 0.2)',
+  borderRadius: '8px',
+  padding: '12px',
+  lineHeight: 1.5,
+  marginTop: '16px',
+};
 
 function CourseDetailPage() {
   const { id } = useParams();
@@ -119,6 +181,8 @@ function CourseDetailPage() {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [enrolling, setEnrolling] = useState(false);
+  const [enrollmentData, setEnrollmentData] = useState(null);
+  const [paymentTab, setPaymentTab] = useState('upi');
   const [error, setError] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
@@ -154,61 +218,10 @@ function CourseDetailPage() {
     setEnrolling(true);
 
     try {
-      // Load Razorpay script
-      const loaded = await loadRazorpayScript();
-      if (!loaded) {
-        toast.error('Payment gateway failed to load. Please try again.');
-        setEnrolling(false);
-        return;
-      }
-
-      // Create enrollment order
       const response = await enrollInCourse(id);
       const data = response.data;
-
-      // Dev mode: enrollment already paid, skip Razorpay
-      if (data.devMode) {
-        toast.success('Enrolled successfully!');
-        fetchCourse();
-        setEnrolling(false);
-        return;
-      }
-
-      const { razorpayOrderId, amount, key } = data;
-
-      // Open Razorpay payment modal
-      const options = {
-        key,
-        amount,
-        currency: 'INR',
-        name: 'Dheena Arts',
-        description: `Enrollment: ${course.title}`,
-        order_id: razorpayOrderId,
-        handler: async (paymentResponse) => {
-          try {
-            await verifyEnrollmentPayment(id, {
-              razorpayOrderId: paymentResponse.razorpay_order_id,
-              razorpayPaymentId: paymentResponse.razorpay_payment_id,
-              razorpaySignature: paymentResponse.razorpay_signature,
-            });
-            toast.success('Enrolled successfully!');
-            fetchCourse();
-          } catch (err) {
-            toast.error('Payment verification failed. Please contact support.');
-          }
-        },
-        modal: {
-          ondismiss: () => {
-            setEnrolling(false);
-          },
-        },
-        theme: {
-          color: '#1a1a2e',
-        },
-      };
-
-      const razorpay = new window.Razorpay(options);
-      razorpay.open();
+      setEnrollmentData(data);
+      toast.success('Enrollment created! Please complete payment.');
     } catch (err) {
       const message =
         err.response?.data?.error || 'Failed to initiate enrollment.';
@@ -269,16 +282,18 @@ function CourseDetailPage() {
         </Button>
       )}
 
-      <div
-        style={{
-          marginTop: 'var(--space-lg)',
-          fontSize: '0.875rem',
-          color: 'var(--color-text-light)',
-          textAlign: 'center',
-        }}
-      >
-        {course.lessonCount || 0} lesson{(course.lessonCount || 0) !== 1 ? 's' : ''} included
-      </div>
+      {(course.lessonCount || 0) > 0 && (
+        <div
+          style={{
+            marginTop: 'var(--space-lg)',
+            fontSize: '0.875rem',
+            color: 'var(--color-text-light)',
+            textAlign: 'center',
+          }}
+        >
+          {course.lessonCount} lesson{course.lessonCount !== 1 ? 's' : ''} included
+        </div>
+      )}
     </div>
   );
 
@@ -315,6 +330,61 @@ function CourseDetailPage() {
           />
         </div>
       </div>
+
+      {enrollmentData && (
+        <div style={paymentModalOverlayStyle} onClick={() => setEnrollmentData(null)}>
+          <div style={paymentModalStyle} onClick={(e) => e.stopPropagation()}>
+            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '4px' }}>
+              Payment Details
+            </h3>
+            <p style={{ fontSize: '0.875rem', color: 'var(--color-text-light)', marginBottom: '16px' }}>
+              Complete payment for <strong>{enrollmentData.courseTitle}</strong> &mdash; {formatPrice(enrollmentData.amount)}
+            </p>
+
+            <div style={paymentTabsStyle}>
+              <button style={paymentTabStyle(paymentTab === 'upi')} onClick={() => setPaymentTab('upi')} type="button">UPI / QR</button>
+              <button style={paymentTabStyle(paymentTab === 'bank')} onClick={() => setPaymentTab('bank')} type="button">Bank Transfer</button>
+            </div>
+
+            {paymentTab === 'upi' && (
+              <>
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0' }}>
+                  <img src="/upi-qr.jpeg" alt="UPI QR Code" style={{ width: '280px', height: '280px', borderRadius: '12px', backgroundColor: '#fff', padding: '8px' }} />
+                </div>
+                <div style={paymentLabelStyle}>GPay Number</div>
+                <div style={paymentValueStyle}>+91 8667397995</div>
+                <div style={paymentLabelStyle}>UPI ID</div>
+                <div style={paymentValueStyle}>thina1999boss@okhdfcbank</div>
+              </>
+            )}
+
+            {paymentTab === 'bank' && (
+              <>
+                <div style={paymentLabelStyle}>Account Holder Name</div>
+                <div style={paymentValueStyle}>Thillainathan</div>
+                <div style={paymentLabelStyle}>Bank Name</div>
+                <div style={paymentValueStyle}>Tamilnadu Mercantile Bank</div>
+                <div style={paymentLabelStyle}>Account Number</div>
+                <div style={paymentValueStyle}>328100050310835</div>
+                <div style={paymentLabelStyle}>IFSC Code</div>
+                <div style={paymentValueStyle}>TMBL0000328</div>
+              </>
+            )}
+
+            <div style={paymentNoteStyle}>
+              <strong>Important:</strong> Your enrollment will be confirmed once payment is verified by our team. Please mention the course name in payment remarks.
+            </div>
+
+            <button
+              onClick={() => setEnrollmentData(null)}
+              style={{ width: '100%', marginTop: '16px', padding: '12px', fontSize: '0.95rem', fontWeight: 600, backgroundColor: 'var(--color-accent)', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontFamily: 'var(--font-primary)' }}
+              type="button"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
