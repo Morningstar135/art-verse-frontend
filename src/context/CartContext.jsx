@@ -10,7 +10,7 @@ export function CartProvider({ children }) {
   const [loading, setLoading] = useState(false);
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
-  const total = items.reduce((sum, item) => sum + (item.price || item.unitPrice || 0) * item.quantity, 0);
+  const total = items.reduce((sum, item) => sum + (item.lineTotal || (item.unitPrice || item.price || 0) * item.quantity), 0);
 
   const fetchCart = useCallback(async () => {
     if (!isAuthenticated) {
