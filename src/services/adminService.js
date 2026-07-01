@@ -146,3 +146,8 @@ export async function adminUpdateOrderStatus(id, status) {
   const res = await api.put(`/admin/orders/${id}/status`, { status });
   return res.data;
 }
+
+export async function adminUpdatePaymentStatus(id, paymentStatus) {
+  const res = await api.put(`/admin/orders/${id}/payment-status`, { paymentStatus });
+  return res.data;
+}

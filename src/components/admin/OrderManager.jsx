@@ -6,6 +6,7 @@ import {
   adminGetOrders,
   adminGetOrderDetail,
   adminUpdateOrderStatus,
+  adminUpdatePaymentStatus,
 } from '../../services/adminService';
 
 const ORDER_STATUSES = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
@@ -80,6 +81,8 @@ function OrderDetailView({ orderId, onClose }) {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [newStatus, setNewStatus] = useState('');
+  const [newPaymentStatus, setNewPaymentStatus] = useState('');
+  const [updatingPayment, setUpdatingPayment] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -107,6 +110,21 @@ function OrderDetailView({ orderId, onClose }) {
       toast.error(err?.response?.data?.error || 'Failed to update status');
     } finally {
       setUpdating(false);
+    }
+  }
+
+  async function handlePaymentStatusUpdate() {
+    if (!newPaymentStatus) return;
+    setUpdatingPayment(true);
+    try {
+      await adminUpdatePaymentStatus(orderId, newPaymentStatus);
+      setOrder((o) => ({ ...o, paymentStatus: newPaymentStatus }));
+      setNewPaymentStatus('');
+      toast.success(`Payment status updated to "${newPaymentStatus}"`);
+    } catch (err) {
+      toast.error(err?.response?.data?.error || 'Failed to update payment status');
+    } finally {
+      setUpdatingPayment(false);
     }
   }
 
@@ -145,6 +163,36 @@ function OrderDetailView({ orderId, onClose }) {
         </div>
       </div>
 
+      {order.transactionLast4 && (
+        <div style={{ backgroundColor: 'var(--color-bg)', padding: 'var(--space-md)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
+          <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-text-light)', marginBottom: 'var(--space-xs)', textTransform: 'uppercase' }}>Transaction Last 4 Digits</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 700, fontFamily: 'monospace', letterSpacing: '4px', color: 'var(--color-accent)' }}>
+            {order.transactionLast4}
+          </div>
+        </div>
+      )}
+
+      {/* Payment Status Update */}
+      <div style={{ backgroundColor: 'var(--color-bg)', padding: 'var(--space-md)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
+        <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-text-light)', marginBottom: 'var(--space-sm)', textTransform: 'uppercase' }}>Update Payment Status</div>
+        <div style={{ display: 'flex', gap: 'var(--space-sm)', alignItems: 'center' }}>
+          <select
+            className="form-input"
+            style={{ maxWidth: 200 }}
+            value={newPaymentStatus}
+            onChange={(e) => setNewPaymentStatus(e.target.value)}
+          >
+            <option value="">Select...</option>
+            {['paid', 'failed', 'refunded'].filter(s => s !== order.paymentStatus).map((s) => (
+              <option key={s} value={s} style={{ textTransform: 'capitalize' }}>{s}</option>
+            ))}
+          </select>
+          <Button variant="primary" size="sm" loading={updatingPayment} onClick={handlePaymentStatusUpdate} disabled={!newPaymentStatus}>
+            Update Payment
+          </Button>
+        </div>
+      </div>
+
       {order.shippingAddress && (
         <div style={{ backgroundColor: 'var(--color-bg)', padding: 'var(--space-md)', borderRadius: 'var(--radius-md)' }}>
           <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-text-light)', marginBottom: 'var(--space-xs)', textTransform: 'uppercase' }}>Shipping Address</div>
@@ -174,12 +222,12 @@ function OrderDetailView({ orderId, onClose }) {
               }}
             >
               <div>
-                <div style={{ fontWeight: 500 }}>{item.artworkTitle || item.artworkId}</div>
+                <div style={{ fontWeight: 500 }}>{item.title || item.artworkId}</div>
                 <div style={{ fontSize: '0.8125rem', color: 'var(--color-text-light)' }}>
                   {item.medium} · {item.size} · {item.quality} × {item.quantity}
                 </div>
               </div>
-              <div style={{ fontWeight: 600 }}>{formatPrice(item.price * item.quantity)}</div>
+              <div style={{ fontWeight: 600 }}>{formatPrice(item.lineTotal || item.unitPrice * item.quantity)}</div>
             </div>
           ))}
         </div>

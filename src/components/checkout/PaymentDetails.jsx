@@ -90,10 +90,10 @@ const noteStyle = {
   marginTop: '16px',
 };
 
-const orderRefStyle = {
-  fontSize: '0.85rem',
+const amountStyle = {
+  fontSize: '1.1rem',
   color: 'var(--color-accent)',
-  fontWeight: 600,
+  fontWeight: 700,
   marginBottom: '16px',
   padding: '10px 12px',
   backgroundColor: 'rgba(233, 69, 96, 0.1)',
@@ -101,18 +101,58 @@ const orderRefStyle = {
   textAlign: 'center',
 };
 
-function PaymentDetails({ orderNumber, amount }) {
+const txnInputStyle = {
+  width: '100%',
+  padding: '12px 14px',
+  fontSize: '1.1rem',
+  fontFamily: 'monospace',
+  letterSpacing: '8px',
+  textAlign: 'center',
+  backgroundColor: 'rgba(255,255,255,0.05)',
+  border: '1px solid var(--color-border, rgba(255,255,255,0.2))',
+  borderRadius: '8px',
+  color: 'var(--color-text)',
+  outline: 'none',
+  boxSizing: 'border-box',
+};
+
+const submitBtnStyle = (disabled) => ({
+  width: '100%',
+  marginTop: '12px',
+  padding: '14px',
+  fontSize: '1rem',
+  fontWeight: 600,
+  backgroundColor: disabled ? 'rgba(233, 69, 96, 0.4)' : 'var(--color-accent)',
+  color: '#fff',
+  border: 'none',
+  borderRadius: '8px',
+  cursor: disabled ? 'not-allowed' : 'pointer',
+  fontFamily: 'var(--font-primary)',
+});
+
+function PaymentDetails({ amount, onPaymentConfirm, processing }) {
   const [activeTab, setActiveTab] = useState('upi');
+  const [txnLast4, setTxnLast4] = useState('');
+
+  const handleTxnChange = (e) => {
+    const val = e.target.value.replace(/\D/g, '').slice(0, 4);
+    setTxnLast4(val);
+  };
+
+  const handleSubmit = () => {
+    if (txnLast4.length !== 4 || processing) return;
+    onPaymentConfirm(txnLast4);
+  };
 
   return (
     <div style={containerStyle}>
       <h3 style={titleStyle}>Payment Details</h3>
       <p style={subtitleStyle}>
-        Please complete your payment using any of the methods below
+        Complete your payment using any method below, then enter the last 4 digits of your transaction ID
       </p>
 
-      <div style={orderRefStyle}>
-        Order #{orderNumber} &mdash; Total: {formatPrice(amount)}
+      <div style={amountStyle}>
+        Total: {formatPrice(amount)}
       </div>
 
       <div style={tabsStyle}>
@@ -167,8 +207,34 @@ function PaymentDetails({ orderNumber, amount }) {
       )}
 
       <div style={noteStyle}>
-        <strong>Important:</strong> Please mention your order number <strong>#{orderNumber}</strong> in
-        the payment remarks/note. Your order will be confirmed once payment is verified by our team.
+        <strong>Important:</strong> Your order will be created and confirmed once you submit the transaction details below.
+      </div>
+
+      <div style={{ marginTop: '20px', padding: '16px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '10px', border: '1px solid var(--color-border, rgba(255,255,255,0.1))' }}>
+        <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text)', marginBottom: '8px' }}>
+          Enter last 4 digits of your Transaction ID
+        </div>
+        <input
+          type="text"
+          inputMode="numeric"
+          maxLength={4}
+          placeholder="0000"
+          value={txnLast4}
+          onChange={handleTxnChange}
+          disabled={processing}
+          style={txnInputStyle}
+        />
+        <div style={{ fontSize: '0.75rem', color: 'var(--color-text-light)', marginTop: '6px' }}>
+          You can find this in your UPI app or bank statement
+        </div>
+        <button
+          onClick={handleSubmit}
+          disabled={txnLast4.length !== 4 || processing}
+          style={submitBtnStyle(txnLast4.length !== 4 || processing)}
+          type="button"
+        >
+          {processing ? 'Placing Order...' : 'Submit & Place Order'}
+        </button>
       </div>
     </div>
   );

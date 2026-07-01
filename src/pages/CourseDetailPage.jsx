@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { getCourse, enrollInCourse } from '../services/courseService';
+import { getCourse, enrollInCourse, confirmCoursePayment } from '../services/courseService';
 import { useAuth } from '../context/AuthContext';
 import CurriculumList from '../components/courses/CurriculumList';
 import { Loader, Button } from '../components/common';
@@ -185,6 +185,9 @@ function CourseDetailPage() {
   const [paymentTab, setPaymentTab] = useState('upi');
   const [error, setError] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [txnLast4, setTxnLast4] = useState('');
+  const [txnSubmitting, setTxnSubmitting] = useState(false);
+  const [txnSubmitted, setTxnSubmitted] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -228,6 +231,20 @@ function CourseDetailPage() {
       toast.error(message);
     } finally {
       setEnrolling(false);
+    }
+  };
+
+  const handleTxnSubmit = async () => {
+    if (txnLast4.length !== 4) return;
+    setTxnSubmitting(true);
+    try {
+      await confirmCoursePayment(id, txnLast4);
+      setTxnSubmitted(true);
+      toast.success('Payment details submitted! We will verify and confirm your enrollment.');
+    } catch (err) {
+      toast.error(err.response?.data?.error || 'Failed to submit payment details');
+    } finally {
+      setTxnSubmitting(false);
     }
   };
 
@@ -375,13 +392,32 @@ function CourseDetailPage() {
               <strong>Important:</strong> Your enrollment will be confirmed once payment is verified by our team. Please mention the course name in payment remarks.
             </div>
 
-            <button
-              onClick={() => setEnrollmentData(null)}
-              style={{ width: '100%', marginTop: '16px', padding: '12px', fontSize: '0.95rem', fontWeight: 600, backgroundColor: 'var(--color-accent)', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontFamily: 'var(--font-primary)' }}
-              type="button"
-            >
-              Done
-            </button>
+            <div style={{ marginTop: '20px', padding: '16px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '10px', border: '1px solid var(--color-border, rgba(255,255,255,0.1))' }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text)', marginBottom: '8px' }}>
+                Enter last 4 digits of your Transaction ID
+              </div>
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={4}
+                placeholder="0000"
+                value={txnLast4}
+                onChange={(e) => setTxnLast4(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                disabled={txnSubmitted}
+                style={{ width: '100%', padding: '12px 14px', fontSize: '1.1rem', fontFamily: 'monospace', letterSpacing: '8px', textAlign: 'center', backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid var(--color-border, rgba(255,255,255,0.2))', borderRadius: '8px', color: 'var(--color-text)', outline: 'none', boxSizing: 'border-box' }}
+              />
+              <div style={{ fontSize: '0.75rem', color: 'var(--color-text-light)', marginTop: '6px' }}>
+                You can find this in your UPI app or bank statement
+              </div>
+              <button
+                onClick={handleTxnSubmit}
+                disabled={txnLast4.length !== 4 || txnSubmitting || txnSubmitted}
+                style={{ width: '100%', marginTop: '12px', padding: '12px', fontSize: '0.95rem', fontWeight: 600, backgroundColor: (txnLast4.length !== 4 || txnSubmitting || txnSubmitted) ? 'rgba(233, 69, 96, 0.4)' : 'var(--color-accent)', color: '#fff', border: 'none', borderRadius: '8px', cursor: (txnLast4.length !== 4 || txnSubmitting || txnSubmitted) ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-primary)' }}
+                type="button"
+              >
+                {txnSubmitted ? 'Submitted' : txnSubmitting ? 'Submitting...' : 'Submit & Confirm Payment'}
+              </button>
+            </div>
           </div>
         </div>
       )}

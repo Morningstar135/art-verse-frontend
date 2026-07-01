@@ -67,8 +67,8 @@ const otpDigitStyle = {
 
 function ForgotPasswordPage() {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1); // 1=phone, 2=otp+password
-  const [phone, setPhone] = useState('');
+  const [step, setStep] = useState(1); // 1=email, 2=otp+password
+  const [email, setEmail] = useState('');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -77,16 +77,16 @@ function ForgotPasswordPage() {
 
   async function handleSendOtp(e) {
     e.preventDefault();
-    if (!phone.trim() || !/^\d{10}$/.test(phone.trim())) {
-      setErrors({ phone: 'Enter a valid 10-digit phone number' });
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setErrors({ email: 'Enter a valid email address' });
       return;
     }
 
     setLoading(true);
     setErrors({});
     try {
-      const res = await forgotPassword(phone);
-      toast.success('OTP sent to your phone');
+      await forgotPassword(email);
+      toast.success('OTP sent to your email');
       setStep(2);
     } catch (err) {
       toast.error(err.response?.data?.error || 'Failed to send OTP');
@@ -141,7 +141,7 @@ function ForgotPasswordPage() {
     setLoading(true);
     setErrors({});
     try {
-      await resetPassword(phone, code, newPassword);
+      await resetPassword(email, code, newPassword);
       toast.success('Password reset successfully! Please login.');
       navigate('/login');
     } catch (err) {
@@ -157,25 +157,24 @@ function ForgotPasswordPage() {
         <h1 style={titleStyle}>Reset Password</h1>
         <p style={subtitleStyle}>
           {step === 1
-            ? 'Enter your phone number to receive an OTP'
-            : `Enter OTP sent to ${phone} and set a new password`}
+            ? 'Enter your email to receive an OTP'
+            : `Enter OTP sent to ${email} and set a new password`}
         </p>
 
         {step === 1 ? (
           <form onSubmit={handleSendOtp}>
             <div className="form-group">
-              <label className="form-label" htmlFor="fp-phone">Phone Number</label>
+              <label className="form-label" htmlFor="fp-email">Email</label>
               <input
-                id="fp-phone"
-                type="tel"
-                className={`form-input${errors.phone ? ' error' : ''}`}
-                placeholder="10-digit mobile number"
-                value={phone}
-                onChange={(e) => { setPhone(e.target.value); setErrors({}); }}
-                autoComplete="tel"
-                maxLength={10}
+                id="fp-email"
+                type="email"
+                className={`form-input${errors.email ? ' error' : ''}`}
+                placeholder="your@email.com"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); setErrors({}); }}
+                autoComplete="email"
               />
-              {errors.phone && <span className="form-error">{errors.phone}</span>}
+              {errors.email && <span className="form-error">{errors.email}</span>}
             </div>
 
             <button
@@ -256,7 +255,7 @@ function ForgotPasswordPage() {
                   fontFamily: 'var(--font-primary)',
                 }}
               >
-                Change Number
+                Change Email
               </button>
             </div>
           </form>

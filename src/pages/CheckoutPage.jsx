@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useCart } from '../context/CartContext';
 import AddressForm from '../components/checkout/AddressForm';
 import OrderSummary from '../components/checkout/OrderSummary';
 import PaymentDetails from '../components/checkout/PaymentDetails';
 import { Loader, EmptyState } from '../components/common';
+import { formatPrice } from '../utils/formatters';
 import * as orderService from '../services/orderService';
 
 const pageStyle = {
@@ -67,9 +69,14 @@ function CheckoutPage() {
 
   const [step, setStep] = useState(1);
   const [shippingAddress, setShippingAddress] = useState(null);
+  const [showPayment, setShowPayment] = useState(false);
   const [orderData, setOrderData] = useState(null);
   const [error, setError] = useState('');
   const [processing, setProcessing] = useState(false);
+
+  // Snapshot items before cart is cleared
+  const [savedItems, setSavedItems] = useState(null);
+  const [savedTotal, setSavedTotal] = useState(null);
 
   const handleAddressSubmit = (address) => {
     setShippingAddress(address);
@@ -77,24 +84,34 @@ function CheckoutPage() {
     setError('');
   };
 
-  const handlePlaceOrder = async () => {
+  const handleProceedToPayment = () => {
+    // Save cart snapshot and show payment section — NO DB call yet
+    setSavedItems([...items]);
+    setSavedTotal(total);
+    setShowPayment(true);
+  };
+
+  const handlePaymentConfirm = async (transactionLast4) => {
     setProcessing(true);
     setError('');
 
     try {
       const response = await orderService.createOrder({
         shippingAddress,
+        transactionLast4,
       });
 
       const data = response.data;
       setOrderData(data);
       clearCart();
+      toast.success('Order placed successfully!');
     } catch (err) {
       const message =
         err.response?.data?.error ||
         err.response?.data?.errors?.[0]?.msg ||
         'Failed to create order. Please try again.';
       setError(message);
+      toast.error(message);
     } finally {
       setProcessing(false);
     }
@@ -108,7 +125,7 @@ function CheckoutPage() {
     );
   }
 
-  if ((!items || items.length === 0) && !orderData) {
+  if ((!items || items.length === 0) && !orderData && !savedItems) {
     return (
       <div style={pageStyle}>
         <h1 style={headerStyle}>Checkout</h1>
@@ -123,6 +140,43 @@ function CheckoutPage() {
       </div>
     );
   }
+
+  // Order placed successfully
+  if (orderData) {
+    return (
+      <div style={pageStyle}>
+        <h1 style={headerStyle}>Order Confirmed!</h1>
+        <div style={{
+          backgroundColor: 'var(--color-surface)',
+          borderRadius: '12px',
+          padding: '32px',
+          textAlign: 'center',
+          border: '1px solid var(--color-border)',
+        }}>
+          <div style={{ fontSize: '3rem', marginBottom: '16px' }}>&#10003;</div>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', color: 'var(--color-primary)', marginBottom: '8px' }}>
+            Thank you for your order!
+          </h2>
+          <p style={{ color: 'var(--color-text-light)', marginBottom: '16px' }}>
+            Order <strong>#{orderData.orderNumber}</strong> — {formatPrice(orderData.amount)}
+          </p>
+          <p style={{ fontSize: '0.875rem', color: 'var(--color-text-light)', marginBottom: '24px' }}>
+            Our team will verify your payment and update the status.
+          </p>
+          <button
+            className="btn btn-primary"
+            onClick={() => navigate('/dashboard')}
+            style={{ padding: '12px 32px' }}
+          >
+            Go to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const displayItems = savedItems || items;
+  const displayTotal = savedTotal ?? total;
 
   return (
     <div style={pageStyle}>
@@ -141,38 +195,28 @@ function CheckoutPage() {
 
       {step === 2 && (
         <>
-          <button style={backBtnStyle} onClick={() => setStep(1)} type="button">
+          <button style={backBtnStyle} onClick={() => { setStep(1); setShowPayment(false); }} type="button">
             &larr; Back to Address
           </button>
 
-          <OrderSummary items={items} total={total} shippingAddress={shippingAddress} />
+          <OrderSummary items={displayItems} total={displayTotal} shippingAddress={shippingAddress} />
 
           <div style={spacerStyle} />
 
-          {!orderData ? (
+          {!showPayment ? (
             <button
               className="btn btn-primary btn-full"
               style={{ width: '100%', padding: '14px', fontSize: '1rem' }}
-              onClick={handlePlaceOrder}
-              disabled={processing}
+              onClick={handleProceedToPayment}
             >
-              {processing ? 'Creating Order...' : 'Place Order'}
+              Proceed to Payment
             </button>
           ) : (
-            <>
-              <PaymentDetails
-                orderNumber={orderData.orderNumber}
-                amount={orderData.amount}
-              />
-              <div style={spacerStyle} />
-              <button
-                className="btn btn-primary btn-full"
-                style={{ width: '100%', padding: '14px', fontSize: '1rem' }}
-                onClick={() => navigate(`/orders/${orderData.orderId}/confirmation`)}
-              >
-                I've Completed Payment &rarr;
-              </button>
-            </>
+            <PaymentDetails
+              amount={displayTotal}
+              onPaymentConfirm={handlePaymentConfirm}
+              processing={processing}
+            />
           )}
         </>
       )}

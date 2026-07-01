@@ -361,6 +361,29 @@ function OrderDetailPage() {
           </span>
         </div>
       </div>
+
+      {/* Payment Verification Info */}
+      {order.transactionLast4 && order.paymentStatus === 'pending' && (
+        <div style={sectionStyle}>
+          <h2 style={sectionTitleStyle}>Payment Verification</h2>
+          <div style={{
+            padding: 'var(--space-md)',
+            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+            borderRadius: 'var(--radius-md)',
+            textAlign: 'center',
+          }}>
+            <p style={{ fontSize: '0.9rem', color: 'var(--color-text)', marginBottom: '4px' }}>
+              Transaction last 4 digits:
+              <strong style={{ fontSize: '1.1rem', letterSpacing: '4px', marginLeft: '8px', fontFamily: 'monospace' }}>
+                {order.transactionLast4}
+              </strong>
+            </p>
+            <p style={{ fontSize: '0.8rem', color: 'var(--color-text-light)', margin: 0 }}>
+              Our team will verify your payment and update the status shortly.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

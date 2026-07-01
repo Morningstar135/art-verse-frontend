@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Input } from '../components/common';
 import toast from 'react-hot-toast';
 
 const pageStyle = {
@@ -45,10 +44,16 @@ const footerStyle = {
   color: 'var(--color-text-light)',
 };
 
+const forgotStyle = {
+  textAlign: 'right',
+  marginTop: '4px',
+  marginBottom: 'var(--space-sm)',
+};
+
 function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ phone: '', password: '' });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -60,8 +65,8 @@ function LoginPage() {
 
   function validate() {
     const errs = {};
-    if (!formData.phone.trim()) errs.phone = 'Phone number is required';
-    else if (!/^\d{10}$/.test(formData.phone.trim())) errs.phone = 'Enter a valid 10-digit phone number';
+    if (!formData.email.trim()) errs.email = 'Email is required';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) errs.email = 'Enter a valid email';
     if (!formData.password) errs.password = 'Password is required';
     return errs;
   }
@@ -76,7 +81,7 @@ function LoginPage() {
 
     setLoading(true);
     try {
-      await login(formData.phone, formData.password);
+      await login(formData.email, formData.password);
       toast.success('Welcome back!');
       navigate('/');
     } catch (err) {
@@ -95,19 +100,18 @@ function LoginPage() {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label" htmlFor="login-phone">Phone Number</label>
+            <label className="form-label" htmlFor="login-email">Email</label>
             <input
-              id="login-phone"
-              name="phone"
-              type="tel"
-              className={`form-input${errors.phone ? ' error' : ''}`}
-              placeholder="10-digit mobile number"
-              value={formData.phone}
+              id="login-email"
+              name="email"
+              type="email"
+              className={`form-input${errors.email ? ' error' : ''}`}
+              placeholder="your@email.com"
+              value={formData.email}
               onChange={handleChange}
-              autoComplete="tel"
-              maxLength={10}
+              autoComplete="email"
             />
-            {errors.phone && <span className="form-error">{errors.phone}</span>}
+            {errors.email && <span className="form-error">{errors.email}</span>}
           </div>
 
           <div className="form-group">
@@ -117,12 +121,18 @@ function LoginPage() {
               name="password"
               type="password"
               className={`form-input${errors.password ? ' error' : ''}`}
-              placeholder="••••••••"
+              placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
               autoComplete="current-password"
             />
             {errors.password && <span className="form-error">{errors.password}</span>}
+          </div>
+
+          <div style={forgotStyle}>
+            <Link to="/forgot-password" style={{ fontSize: '0.8125rem', color: 'var(--color-accent)', fontWeight: 500 }}>
+              Forgot password?
+            </Link>
           </div>
 
           <button
