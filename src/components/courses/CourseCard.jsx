@@ -108,7 +108,7 @@ function CourseCard({ course }) {
           ) : (
             <div style={placeholderStyle}>No Thumbnail</div>
           )}
-          {course.lessonCount !== undefined && (
+          {course.lessonCount > 0 && (
             <span style={lessonBadgeStyle}>
               {course.lessonCount} lesson{course.lessonCount !== 1 ? 's' : ''}
             </span>
